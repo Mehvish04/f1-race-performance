@@ -1,416 +1,1378 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APEX | Formula 1 Analytics</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08090c">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<title>APEX | The Art of Racing</title>
 
-  <style>
-    :root {
-      --navy: #101722;
-      --navy-light: #182332;
-      --gold: #d8bd86;
-      --cream: #f5f1e8;
-      --muted: #a8b0bb;
-      --red: #d94a4a;
-      --line: rgba(216, 189, 134, 0.22);
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --black:#08090c;
+    --panel:#101218;
+    --panel2:#171a22;
+    --red:#f02040;
+    --white:#f5f5f5;
+    --muted:#888c99;
+    --line:rgba(255,255,255,.10);
+    --mono:'Space Mono',monospace;
+    --display:'Barlow Condensed',sans-serif;
+}
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+    background:var(--black);
+    color:var(--white);
+    font-family:'DM Sans',sans-serif;
+    overflow-x:hidden;
+}
+
+body::after {
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:.10;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.17'/%3E%3C/svg%3E");
+}
+
+a { text-decoration:none; color:inherit; }
+button { font:inherit; }
+
+/* INTRO */
+
+#intro {
+    position:fixed;
+    inset:0;
+    background:#050609;
+    z-index:5000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:opacity .8s,visibility .8s;
+}
+
+#intro.done {
+    opacity:0;
+    visibility:hidden;
+}
+
+.intro-inner { text-align:center; }
+
+.intro-logo {
+    font:900 clamp(65px,13vw,130px)/.9 var(--display);
+    letter-spacing:12px;
+}
+
+.intro-logo span { color:var(--red); }
+
+.intro-caption {
+    font:10px var(--mono);
+    letter-spacing:5px;
+    color:var(--muted);
+    margin-top:24px;
+}
+
+.intro-bar {
+    width:210px;
+    height:2px;
+    background:#242630;
+    margin:22px auto;
+    overflow:hidden;
+}
+
+.intro-bar span {
+    display:block;
+    width:40%;
+    height:100%;
+    background:var(--red);
+    animation:loadbar 1.4s ease-in-out infinite;
+}
+
+@keyframes loadbar {
+    from {transform:translateX(-110%);}
+    to {transform:translateX(280%);}
+}
+
+/* PROGRESS */
+
+.progress {
+    height:2px;
+    width:0;
+    position:fixed;
+    top:0;
+    left:0;
+    background:var(--red);
+    z-index:2000;
+}
+
+/* NAV */
+
+nav {
+    height:78px;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+    padding:0 7%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(8,9,12,.82);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--line);
+}
+
+.logo {
+    font:900 32px var(--display);
+    letter-spacing:4px;
+}
+
+.logo span {color:var(--red);}
+
+.nav-center {
+    display:flex;
+    gap:30px;
+}
+
+.nav-center a {
+    font:10px var(--mono);
+    color:#a5a7b0;
+    transition:.3s;
+}
+
+.nav-center a:hover {color:var(--red);}
+
+.nav-right {
+    font:10px var(--mono);
+    color:var(--red);
+    letter-spacing:2px;
+}
+
+.menu {
+    display:none;
+    color:white;
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+}
+
+/* HERO */
+
+.hero {
+    min-height:100vh;
+    padding:140px 8% 80px;
+    display:flex;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-grid {
+    position:absolute;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:65px 65px;
+    mask-image:linear-gradient(to bottom,black,transparent 95%);
+}
+
+.hero-glow {
+    position:absolute;
+    width:600px;
+    height:600px;
+    background:rgba(240,32,64,.14);
+    filter:blur(140px);
+    border-radius:50%;
+    right:-180px;
+    top:100px;
+    animation:glow 7s infinite alternate;
+}
+
+@keyframes glow {
+    to {transform:scale(1.3);opacity:.5;}
+}
+
+.hero-content {
+    position:relative;
+    z-index:5;
+    width:100%;
+}
+
+.hero-topline {
+    display:flex;
+    gap:15px;
+    align-items:center;
+    font:10px var(--mono);
+    letter-spacing:3px;
+    color:var(--red);
+    margin-bottom:35px;
+}
+
+.hero-topline::before {
+    content:"";
+    width:35px;
+    height:1px;
+    background:var(--red);
+}
+
+.hero h1 {
+    font:900 clamp(100px,17vw,220px)/.72 var(--display);
+    letter-spacing:-5px;
+    text-transform:uppercase;
+}
+
+.hero h1 span {
+    display:block;
+    color:transparent;
+    -webkit-text-stroke:1px rgba(255,255,255,.7);
+    margin-top:15px;
+}
+
+.hero-description {
+    max-width:500px;
+    margin-top:45px;
+    color:#a2a5af;
+    font-size:13px;
+    line-height:2;
+}
+
+.hero-buttons {
+    display:flex;
+    gap:15px;
+    margin-top:32px;
+    flex-wrap:wrap;
+}
+
+.btn {
+    padding:17px 24px;
+    font:11px var(--mono);
+    letter-spacing:1px;
+    display:inline-flex;
+    align-items:center;
+    gap:15px;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.btn-red {
+    background:var(--red);
+    color:white;
+    border:1px solid var(--red);
+}
+
+.btn-red:hover {
+    background:#c81131;
+    transform:translateY(-4px);
+    box-shadow:0 10px 35px rgba(240,32,64,.25);
+}
+
+.btn-dark {
+    border:1px solid var(--line);
+    color:white;
+}
+
+.btn-dark:hover {
+    border-color:var(--red);
+    color:var(--red);
+}
+
+.hero-index {
+    position:absolute;
+    right:8%;
+    bottom:100px;
+    z-index:3;
+    font:12px var(--mono);
+    color:var(--muted);
+}
+
+.hero-index strong {
+    color:white;
+    font-size:30px;
+}
+
+.hero-index span {color:var(--red);}
+
+.hero-scroll {
+    position:absolute;
+    bottom:38px;
+    left:8%;
+    font:9px var(--mono);
+    letter-spacing:3px;
+    color:var(--muted);
+    animation:float 2s infinite alternate;
+}
+
+@keyframes float {
+    to {transform:translateY(-7px);}
+}
+
+/* TRACK VISUAL */
+
+.track-art {
+    position:absolute;
+    right:4%;
+    top:20%;
+    width:38%;
+    max-width:480px;
+    opacity:.72;
+    z-index:1;
+    animation:trackFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes trackFloat {
+    to {transform:translateY(-20px) rotate(2deg);}
+}
+
+.track-art svg {width:100%;height:auto;}
+
+.track-path {
+    fill:none;
+    stroke:var(--red);
+    stroke-width:2;
+    stroke-dasharray:12 12;
+    animation:trackMove 15s linear infinite;
+}
+
+@keyframes trackMove {
+    to {stroke-dashoffset:-240;}
+}
+
+/* TICKER */
+
+.ticker {
+    background:var(--red);
+    overflow:hidden;
+    padding:15px 0;
+}
+
+.ticker-inner {
+    display:flex;
+    width:max-content;
+    animation:marquee 27s linear infinite;
+}
+
+.ticker span {
+    font:800 20px var(--display);
+    letter-spacing:4px;
+    padding:0 30px;
+}
+
+@keyframes marquee {
+    to {transform:translateX(-50%);}
+}
+
+/* COMMON */
+
+section.content {
+    padding:115px 8%;
+}
+
+.label {
+    color:var(--red);
+    font:10px var(--mono);
+    letter-spacing:3px;
+    margin-bottom:20px;
+}
+
+.heading {
+    font:800 clamp(48px,7vw,90px)/.9 var(--display);
+    text-transform:uppercase;
+}
+
+.heading em {
+    font-style:normal;
+    color:var(--red);
+}
+
+.description {
+    max-width:600px;
+    font-size:13px;
+    line-height:2;
+    color:var(--muted);
+    margin-top:23px;
+}
+
+/* TELEMETRY */
+
+.telemetry {
+    background:#0c0e13;
+}
+
+.telemetry-heading {
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:end;
+    flex-wrap:wrap;
+}
+
+.simulation-label {
+    font:9px var(--mono);
+    color:#f2bd63;
+    border:1px solid rgba(242,189,99,.3);
+    padding:10px 14px;
+}
+
+.telemetry-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-top:50px;
+}
+
+.telemetry-card {
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:26px 22px;
+    position:relative;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.telemetry-card:hover {
+    border-color:var(--red);
+    transform:translateY(-5px);
+}
+
+.telemetry-card small {
+    font:9px var(--mono);
+    color:var(--muted);
+    letter-spacing:2px;
+}
+
+.telemetry-number {
+    font:700 43px var(--display);
+    margin:18px 0 8px;
+}
+
+.telemetry-number span {
+    color:var(--red);
+}
+
+.telemetry-card p {
+    font-size:10px;
+    color:var(--muted);
+}
+
+.telemetry-line {
+    height:2px;
+    background:#262a35;
+    margin-top:20px;
+    overflow:hidden;
+}
+
+.telemetry-line span {
+    height:100%;
+    display:block;
+    background:var(--red);
+    animation:linePulse 3s infinite alternate;
+}
+
+@keyframes linePulse {
+    from {width:25%;}
+    to {width:95%;}
+}
+
+.wave {
+    height:80px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    margin-top:40px;
+    overflow:hidden;
+}
+
+.wave i {
+    display:block;
+    min-width:3px;
+    width:3px;
+    background:var(--red);
+    border-radius:4px;
+    animation:wave 1s ease-in-out infinite alternate;
+}
+
+@keyframes wave {
+    to {transform:scaleY(.2);}
+}
+
+/* PROJECT */
+
+.project {
+    background:var(--black);
+}
+
+.project-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:50px;
+}
+
+.project-card {
+    min-height:260px;
+    background:var(--panel);
+    padding:35px;
+    border:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+    transition:.4s;
+}
+
+.project-card:hover {
+    border-color:var(--red);
+    transform:translateY(-7px);
+}
+
+.project-card .number {
+    font:800 60px var(--display);
+    color:rgba(255,255,255,.08);
+    position:absolute;
+    right:25px;
+    top:15px;
+}
+
+.project-card h3 {
+    font:700 32px var(--display);
+    margin:30px 0 15px;
+}
+
+.project-card p {
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.9;
+    max-width:390px;
+}
+
+.project-card a {
+    display:inline-block;
+    margin-top:25px;
+    color:var(--red);
+    font:10px var(--mono);
+    letter-spacing:2px;
+}
+
+/* TABLEAU */
+
+.visual-section {
+    background:#0c0e13;
+}
+
+.visual-header {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:35px;
+}
+
+.visual-status {
+    font:10px var(--mono);
+    color:#82d8a0;
+    border:1px solid rgba(130,216,160,.3);
+    padding:10px 14px;
+}
+
+.visual-box {
+    border:1px solid var(--line);
+    background:var(--panel);
+    overflow:hidden;
+}
+
+.visual-bar {
+    padding:23px 27px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+}
+
+.visual-bar h3 {
+    font:700 24px var(--display);
+    letter-spacing:1px;
+}
+
+.visual-bar p {
+    color:var(--muted);
+    font:9px var(--mono);
+    margin-top:7px;
+}
+
+.open-link {
+    color:var(--red);
+    border:1px solid rgba(240,32,64,.5);
+    padding:12px 15px;
+    font:10px var(--mono);
+    transition:.3s;
+}
+
+.open-link:hover {
+    background:var(--red);
+    color:white;
+}
+
+.tableau {
+    width:100%;
+    height:780px;
+    display:block;
+    border:0;
+    background:white;
+}
+
+.story-tableau {
+    height:700px;
+}
+
+.visual-footer {
+    border-top:1px solid var(--line);
+    padding:15px 25px;
+    color:var(--muted);
+    font:9px var(--mono);
+}
+
+/* DATA PROCESS */
+
+.method {
+    background:var(--black);
+}
+
+.method-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-top:50px;
+}
+
+.method-card {
+    border-top:2px solid var(--red);
+    background:var(--panel);
+    padding:30px;
+}
+
+.method-card small {
+    color:var(--red);
+    font:10px var(--mono);
+}
+
+.method-card h3 {
+    font:700 30px var(--display);
+    margin:22px 0 13px;
+}
+
+.method-card p {
+    font-size:12px;
+    line-height:1.9;
+    color:var(--muted);
+}
+
+/* ABOUT */
+
+.about {
+    background:#0c0e13;
+}
+
+.about-layout {
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:60px;
+    margin-top:45px;
+}
+
+.about-copy p {
+    color:var(--muted);
+    font-size:13px;
+    line-height:2;
+    margin-bottom:18px;
+}
+
+.credit-box {
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:32px;
+}
+
+.credit-box h3 {
+    font:700 28px var(--display);
+    margin-bottom:20px;
+}
+
+.credit-row {
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+    font-size:11px;
+}
+
+.credit-row span:first-child {color:var(--muted);}
+.credit-row span:last-child {text-align:right;}
+
+/* FOOTER */
+
+footer {
+    padding:70px 8% 25px;
+    background:#050609;
+    border-top:1px solid var(--line);
+}
+
+.footer-top {
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:35px;
+    padding-bottom:50px;
+}
+
+.footer-brand {
+    font:900 75px var(--display);
+    letter-spacing:6px;
+}
+
+.footer-brand span {color:var(--red);}
+
+.footer-copy {
+    color:var(--muted);
+    font:10px var(--mono);
+    line-height:2;
+}
+
+.footer-nav {
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.footer-nav a {
+    font:10px var(--mono);
+    color:var(--muted);
+}
+
+.footer-nav a:hover {color:var(--red);}
+
+.footer-bottom {
+    border-top:1px solid var(--line);
+    padding-top:22px;
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    color:#626570;
+    font:9px var(--mono);
+}
+
+/* REVEAL */
+
+.reveal {
+    opacity:0;
+    transform:translateY(35px);
+    transition:opacity .8s,transform .8s;
+}
+
+.reveal.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+#backTop {
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    z-index:900;
+    height:45px;
+    width:45px;
+    background:var(--red);
+    color:white;
+    border:0;
+    cursor:pointer;
+    font-size:22px;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+}
+
+#backTop.show {
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:950px) {
+    .track-art {opacity:.25;width:55%;right:-5%;}
+    .telemetry-grid {grid-template-columns:repeat(2,1fr);}
+    .method-grid {grid-template-columns:1fr;}
+}
+
+@media(max-width:700px) {
+    nav {height:70px;padding:0 6%;}
+    .menu {display:block;}
+    .nav-center {
+        display:none;
+        position:absolute;
+        top:70px;
+        left:0;
+        width:100%;
+        background:#101218;
+        padding:30px 7%;
+        flex-direction:column;
+        border-bottom:1px solid var(--line);
     }
+    .nav-center.open {display:flex;}
+    .nav-right {display:none;}
+    .hero {padding:150px 7% 110px;}
+    .hero h1 {font-size:clamp(85px,17vw,130px);}
+    .track-art {width:80%;top:30%;right:-30%;opacity:.18;}
+    .hero-index {right:7%;bottom:80px;}
+    section.content {padding:85px 7%;}
+    .project-grid,.about-layout {grid-template-columns:1fr;}
+    .tableau {height:600px;}
+    .story-tableau {height:550px;}
+    .footer-brand {font-size:60px;}
+}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+@media(max-width:430px) {
+    .telemetry-grid {grid-template-columns:1fr 1fr;}
+    .telemetry-card {padding:20px 14px;}
+    .telemetry-number {font-size:34px;}
+    .hero h1 {font-size:82px;}
+    .hero-buttons {flex-direction:column;align-items:stretch;}
+    .btn {justify-content:center;}
+    .tableau {height:520px;}
+    .story-tableau {height:480px;}
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
     }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--navy);
-      color: var(--cream);
-      font-family: "DM Sans", sans-serif;
-      line-height: 1.7;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .topline {
-      height: 4px;
-      background: linear-gradient(
-        90deg, var(--red) 0 22%, var(--gold) 22% 100%
-      );
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 7%;
-      border-bottom: 1px solid var(--line);
-      gap: 20px;
-    }
-
-    .brand {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: 5px;
-    }
-
-    .brand span {
-      color: var(--gold);
-    }
-
-    .edition {
-      color: var(--muted);
-      font-size: 0.72rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .hero {
-      padding: 90px 7% 78px;
-      background:
-        radial-gradient(ellipse at 85% 20%,
-          rgba(216,189,134,0.12), transparent 38%),
-        linear-gradient(135deg, #101722, #172333);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::after {
-      content: "F1";
-      position: absolute;
-      right: 5%;
-      bottom: -100px;
-      font-size: clamp(15rem, 32vw, 29rem);
-      line-height: 1;
-      font-weight: 700;
-      color: rgba(255,255,255,0.025);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      color: var(--gold);
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    h1, h2 {
-      font-family: "Playfair Display", Georgia, serif;
-      font-weight: 500;
-      line-height: 1.15;
-    }
-
-    h1 {
-      max-width: 850px;
-      margin: 22px 0;
-      font-size: clamp(3rem, 7vw, 6.5rem);
-      letter-spacing: -2px;
-    }
-
-    h1 em {
-      color: var(--gold);
-      font-weight: 500;
-    }
-
-    .intro {
-      max-width: 610px;
-      color: #c0c7d0;
-      font-size: 1rem;
-    }
-
-    .hero-bottom {
-      margin-top: 38px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 12px 21px;
-      background: var(--gold);
-      color: var(--navy);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      transition: 0.25s ease;
-    }
-
-    .button:hover {
-      background: #f0d9a9;
-      transform: translateY(-2px);
-    }
-
-    .text-link {
-      color: var(--cream);
-      font-size: 0.85rem;
-      border-bottom: 1px solid var(--gold);
-      padding-bottom: 3px;
-    }
-
-    .section {
-      padding: 75px 7%;
-    }
-
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .section-heading h2 {
-      font-size: clamp(2rem, 4vw, 3.3rem);
-      margin-top: 10px;
-    }
-
-    .section-heading p {
-      max-width: 340px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .number {
-      color: var(--gold);
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-    }
-
-    .viz-card {
-      background: #fff;
-      border: 1px solid var(--line);
-      padding: 10px;
-      box-shadow: 0 20px 55px rgba(0,0,0,0.18);
-    }
-
-    .viz-frame {
-      width: 100%;
-      height: 850px;
-      border: 0;
-      display: block;
-      background: #fff;
-    }
-
-    .story-frame {
-      height: 900px;
-    }
-
-    .open-link {
-      display: inline-block;
-      color: var(--navy);
-      background: var(--gold);
-      padding: 10px 16px;
-      margin: 14px 0 3px;
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .note {
-      padding: 20px 24px;
-      color: #c0c7d0;
-      background: var(--navy-light);
-      border-left: 3px solid var(--gold);
-      font-size: 0.82rem;
-      margin-top: 20px;
-    }
-
-    .closing {
-      margin: 0 7% 70px;
-      padding: 42px;
-      border: 1px solid var(--line);
-      background: linear-gradient(120deg, #192535, #111a26);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-    }
-
-    .closing h2 {
-      font-size: clamp(1.8rem, 4vw, 2.7rem);
-      margin-top: 10px;
-    }
-
-    .closing p {
-      color: var(--muted);
-      max-width: 520px;
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
-
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 26px 7%;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-
-    footer strong {
-      color: var(--gold);
-      letter-spacing: 2px;
-    }
-
-    @media (max-width: 700px) {
-      header {
-        padding: 18px 6%;
-      }
-
-      .edition {
-        font-size: 0.6rem;
-        letter-spacing: 1px;
-        text-align: right;
-      }
-
-      .hero, .section {
-        padding: 55px 6%;
-      }
-
-      .section-heading, .closing {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .viz-frame {
-        height: 650px;
-      }
-
-      .story-frame {
-        height: 720px;
-      }
-
-      .viz-card {
-        padding: 4px;
-      }
-
-      .closing {
-        margin: 0 6% 45px;
-        padding: 28px;
-      }
-    }
-  </style>
+    .reveal {opacity:1;transform:none;}
+}
+</style>
 </head>
 
 <body>
-  <div class="topline"></div>
 
-  <header>
-    <a href="#" class="brand">APEX<span>.</span></a>
-    <div class="edition">Motorsport Intelligence · Project Edition</div>
-  </header>
+<div class="progress" id="progress"></div>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow">Beyond the chequered flag</div>
+<!-- CINEMATIC INTRO -->
+<div id="intro">
+    <div class="intro-inner">
+        <div class="intro-logo">APEX<span>.</span></div>
+        <div class="intro-bar"><span></span></div>
+        <div class="intro-caption">ENTER THE WORLD OF PERFORMANCE</div>
+    </div>
+</div>
 
-      <h1>The numbers behind<br>the <em>race.</em></h1>
+<!-- NAVIGATION -->
+<nav>
+    <a href="#home" class="logo">APEX<span>.</span></a>
 
-      <p class="intro">
-        A data-driven exploration of Formula 1 performance.
-        Discover racing trends across seasons, compare leading
-        drivers, and explore the teams competing for supremacy.
-      </p>
+    <div class="nav-center" id="nav">
+        <a href="#home">HOME</a>
+        <a href="#telemetry">TELEMETRY</a>
+        <a href="#project">PROJECT</a>
+        <a href="#dashboard">DASHBOARD</a>
+        <a href="#story">STORY</a>
+        <a href="#about">ABOUT</a>
+    </div>
 
-      <div class="hero-bottom">
-        <a class="button" href="#dashboard">EXPLORE THE DATA ↘</a>
-        <a class="text-link" href="#story">Discover the full story</a>
-      </div>
-    </section>
+    <div class="nav-right">F1 / ANALYTICS</div>
 
-    <section class="section" id="dashboard">
-      <div class="section-heading">
-        <div>
-          <div class="number">01 / THE DASHBOARD</div>
-          <h2>Performance, visualised.</h2>
+    <button class="menu" id="menu" aria-label="Open menu">☰</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div class="track-art">
+        <svg viewBox="0 0 500 450" fill="none">
+            <path d="M130 60 C230 20 390 80 400 150 C410 220 330 220 320 285 C310 355 430 390 350 415 C270 440 230 360 170 370 C90 380 50 310 90 250 C130 190 50 120 130 60Z"
+                  stroke="#ffffff" stroke-opacity=".14" stroke-width="15"/>
+            <path class="track-path"
+                  d="M130 60 C230 20 390 80 400 150 C410 220 330 220 320 285 C310 355 430 390 350 415 C270 440 230 360 170 370 C90 380 50 310 90 250 C130 190 50 120 130 60Z"/>
+            <circle cx="130" cy="60" r="8" fill="#f02040"/>
+            <circle cx="130" cy="60" r="18" stroke="#f02040" stroke-opacity=".4"/>
+        </svg>
+    </div>
+
+    <div class="hero-content">
+
+        <div class="hero-topline">THE FORMULA 1 EXPERIENCE</div>
+
+        <h1>
+            ENGINEERED
+            <span>TO PERFORM.</span>
+        </h1>
+
+        <p class="hero-description">
+            Beyond the finish line lies a world of data,
+            precision and performance. Explore Formula 1
+            through a different lens, where every insight
+            brings you closer to the art of racing.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#dashboard" class="btn btn-red">
+                EXPLORE ANALYTICS <span>↗</span>
+            </a>
+            <a href="#project" class="btn btn-dark">
+                DISCOVER APEX
+            </a>
         </div>
-        <p>
-          Explore race wins by season and compare driver and team
-          performance through interactive visualisations.
-        </p>
-      </div>
 
-      <div class="viz-card">
-        <iframe
-          class="viz-frame"
-          title="Formula 1 Race Performance Dashboard"
-          src="https://public.tableau.com/views/Formula1RacePerformanceAnalysis/Dashboard1?:showVizHome=no&:embed=true"
-          loading="lazy"
-          allowfullscreen>
-        </iframe>
-      </div>
+    </div>
 
-      <a class="open-link"
-         href="https://public.tableau.com/app/profile/mehvish.siddiqui/viz/Formula1RacePerformanceAnalysis/Dashboard1?publish=yes"
-         target="_blank" rel="noopener noreferrer">
-        Open dashboard on Tableau Public ↗
-      </a>
+    <div class="hero-index">
+        <strong>01</strong><span> / 04</span><br>
+        <small>THE PERFORMANCE ERA</small>
+    </div>
 
-      <div class="note">
-        INTERACTIVE DATA · Hover over visual elements to explore
-        the available information. Use Tableau's controls where available.
-      </div>
-    </section>
+    <div class="hero-scroll">SCROLL TO EXPERIENCE ↓</div>
+</section>
 
-    <section class="section" id="story">
-      <div class="section-heading">
+<!-- TICKER -->
+<div class="ticker">
+    <div class="ticker-inner">
+        <span>SPEED ✦ PRECISION ✦ DATA ✦ STRATEGY ✦ PERFORMANCE ✦</span>
+        <span>SPEED ✦ PRECISION ✦ DATA ✦ STRATEGY ✦ PERFORMANCE ✦</span>
+        <span>SPEED ✦ PRECISION ✦ DATA ✦ STRATEGY ✦ PERFORMANCE ✦</span>
+        <span>SPEED ✦ PRECISION ✦ DATA ✦ STRATEGY ✦ PERFORMANCE ✦</span>
+    </div>
+</div>
+
+<!-- TELEMETRY -->
+<section class="content telemetry" id="telemetry">
+
+    <div class="telemetry-heading reveal">
         <div>
-          <div class="number">02 / THE STORY</div>
-          <h2>Every season tells a story.</h2>
+            <div class="label">01 / THE CONTROL ROOM</div>
+            <h2 class="heading">RACE <em>TELEMETRY.</em></h2>
+            <p class="description">
+                A visual tribute to the technology behind
+                motorsport. Explore the animated telemetry interface.
+            </p>
         </div>
-        <p>
-          Move beyond individual charts and explore the findings
-          through the complete Formula 1 analytical story.
-        </p>
-      </div>
 
-      <div class="viz-card">
+        <div class="simulation-label">
+            ● VISUAL SIMULATION / NOT LIVE DATA
+        </div>
+    </div>
+
+    <div class="telemetry-grid reveal">
+
+        <div class="telemetry-card">
+            <small>ENGINE RPM</small>
+            <div class="telemetry-number">
+                <span id="rpm">12,450</span>
+            </div>
+            <p>SIMULATED ENGINE INDICATOR</p>
+            <div class="telemetry-line"><span style="width:80%"></span></div>
+        </div>
+
+        <div class="telemetry-card">
+            <small>VELOCITY</small>
+            <div class="telemetry-number">
+                <span id="speed">286</span><span> km/h</span>
+            </div>
+            <p>SIMULATED SPEED INDICATOR</p>
+            <div class="telemetry-line"><span style="width:72%"></span></div>
+        </div>
+
+        <div class="telemetry-card">
+            <small>GEAR</small>
+            <div class="telemetry-number">
+                <span id="gear">07</span>
+            </div>
+            <p>SIMULATED GEAR INDICATOR</p>
+            <div class="telemetry-line"><span style="width:90%"></span></div>
+        </div>
+
+        <div class="telemetry-card">
+            <small>THROTTLE</small>
+            <div class="telemetry-number">
+                <span id="throttle">94</span><span>%</span>
+            </div>
+            <p>SIMULATED THROTTLE INDICATOR</p>
+            <div class="telemetry-line"><span style="width:94%"></span></div>
+        </div>
+
+    </div>
+
+    <div class="wave reveal" id="wave" aria-label="Animated telemetry waveform"></div>
+
+</section>
+
+<!-- PROJECT -->
+<section class="content project" id="project">
+
+    <div class="reveal">
+        <div class="label">02 / THE PROJECT</div>
+        <h2 class="heading">DATA MEETS <em>RACING.</em></h2>
+        <p class="description">
+            A Formula 1 performance analytics project
+            combining interactive visualization, data
+            exploration and digital presentation.
+        </p>
+    </div>
+
+    <div class="project-grid reveal">
+
+        <div class="project-card">
+            <div class="number">01</div>
+            <h3>PERFORMANCE ANALYSIS</h3>
+            <p>
+                Explore the original Tableau dashboard and
+                investigate the visualized Formula 1 race data.
+            </p>
+            <a href="#dashboard">EXPLORE DASHBOARD ↗</a>
+        </div>
+
+        <div class="project-card">
+            <div class="number">02</div>
+            <h3>DATA STORYTELLING</h3>
+            <p>
+                Move beyond individual visualizations and
+                explore the accompanying Formula 1 data story.
+            </p>
+            <a href="#story">EXPLORE STORY ↗</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="content visual-section" id="dashboard">
+
+    <div class="visual-header reveal">
+        <div>
+            <div class="label">03 / ANALYTICS INTERFACE</div>
+            <h2 class="heading">THE <em>DATA GRID.</em></h2>
+            <p class="description">
+                Your original Formula 1 Race Performance
+                Analysis dashboard, directly embedded.
+            </p>
+        </div>
+        <div class="visual-status">● TABLEAU VISUALIZATION</div>
+    </div>
+
+    <div class="visual-box reveal">
+        <div class="visual-bar">
+            <div>
+                <h3>FORMULA 1 / RACE PERFORMANCE</h3>
+                <p>MEHVISH SIDDIQUI · DASHBOARD 01</p>
+            </div>
+
+            <a class="open-link"
+               href="https://public.tableau.com/app/profile/mehvish.siddiqui/viz/Formula1RacePerformanceAnalysis/Dashboard1?publish=yes"
+               target="_blank" rel="noopener noreferrer">
+                OPEN IN TABLEAU ↗
+            </a>
+        </div>
+
         <iframe
-          class="viz-frame story-frame"
-          title="Formula 1 Race Performance Story"
-          src="https://public.tableau.com/views/Formula1RacePerformanceAnalysis/Story1?:showVizHome=no&:embed=true"
-          loading="lazy"
-          allowfullscreen>
+            class="tableau"
+            title="Mehvish Siddiqui Formula 1 Dashboard"
+            src="https://public.tableau.com/views/Formula1RacePerformanceAnalysis/Dashboard1?:showVizHome=no&:embed=true&:toolbar=yes&:tabs=no"
+            loading="lazy"
+            allowfullscreen>
         </iframe>
-      </div>
 
-      <a class="open-link"
-         href="https://public.tableau.com/app/profile/mehvish.siddiqui/viz/Formula1RacePerformanceAnalysis/Story1?publish=yes"
-         target="_blank" rel="noopener noreferrer">
-        Open full story on Tableau Public ↗
-      </a>
-    </section>
+        <div class="visual-footer">
+            INTERACTIVE DATA VISUALIZATION / POWERED BY TABLEAU PUBLIC
+        </div>
+    </div>
+</section>
 
-    <section class="closing">
-      <div>
-        <div class="eyebrow">The finish line is a starting point.</div>
-        <h2>Driven by data.<br>Defined by performance.</h2>
-        <p>
-          This project demonstrates how data visualisation can
-          transform Formula 1 race results into a clearer view
-          of competitive performance.
+<!-- STORY -->
+<section class="content visual-section" id="story">
+
+    <div class="visual-header reveal">
+        <div>
+            <div class="label">04 / THE NARRATIVE</div>
+            <h2 class="heading">THE STORY <em>BEHIND SPEED.</em></h2>
+            <p class="description">
+                Discover the story behind the visualizations
+                through your original Tableau Story.
+            </p>
+        </div>
+        <div class="visual-status">● STORY MODE</div>
+    </div>
+
+    <div class="visual-box reveal">
+        <div class="visual-bar">
+            <div>
+                <h3>FORMULA 1 / DATA STORY</h3>
+                <p>MEHVISH SIDDIQUI · STORY 01</p>
+            </div>
+
+            <a class="open-link"
+               href="https://public.tableau.com/app/profile/mehvish.siddiqui/viz/Formula1RacePerformanceAnalysis/Story1?publish=yes"
+               target="_blank" rel="noopener noreferrer">
+                OPEN IN TABLEAU ↗
+            </a>
+        </div>
+
+        <iframe
+            class="tableau story-tableau"
+            title="Mehvish Siddiqui Formula 1 Story"
+            src="https://public.tableau.com/views/Formula1RacePerformanceAnalysis/Story1?:showVizHome=no&:embed=true&:toolbar=yes&:tabs=no"
+            loading="lazy"
+            allowfullscreen>
+        </iframe>
+
+        <div class="visual-footer">
+            INTERACTIVE DATA STORY / POWERED BY TABLEAU PUBLIC
+        </div>
+    </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="content method">
+
+    <div class="reveal">
+        <div class="label">05 / THE TECHNOLOGY</div>
+        <h2 class="heading">THE <em>ARCHITECTURE.</em></h2>
+        <p class="description">
+            Three layers working together to create
+            the APEX experience.
         </p>
-      </div>
-      <a class="button" href="#dashboard">BACK TO TOP ↑</a>
-    </section>
-  </main>
+    </div>
 
-  <footer>
-    <span><strong>APEX.</strong> Formula 1 Race Performance Analysis</span>
-    <span>Visualisations powered by Tableau Public</span>
-  </footer>
+    <div class="method-grid reveal">
+
+        <div class="method-card">
+            <small>01 / VISUALIZATION</small>
+            <h3>TABLEAU</h3>
+            <p>
+                Interactive data visualization and
+                storytelling through Tableau Public.
+            </p>
+        </div>
+
+        <div class="method-card">
+            <small>02 / STRUCTURE</small>
+            <h3>HTML & CSS</h3>
+            <p>
+                Responsive webpage structure, layout,
+                styling and cinematic visual design.
+            </p>
+        </div>
+
+        <div class="method-card">
+            <small>03 / INTERACTION</small>
+            <h3>JAVASCRIPT</h3>
+            <p>
+                Animated interface elements, interactive
+                navigation and dynamic visual effects.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="content about" id="about">
+
+    <div class="reveal">
+        <div class="label">06 / THE CREATOR</div>
+        <h2 class="heading">BUILT WITH <em>INTENTION.</em></h2>
+    </div>
+
+    <div class="about-layout">
+
+        <div class="about-copy reveal">
+            <p>
+                APEX is a Formula 1 Race Performance Analytics
+                project developed by Mehvish Siddiqui.
+            </p>
+
+            <p>
+                The project brings together data visualization
+                and web development to create an engaging
+                environment for exploring motorsport analytics.
+            </p>
+
+            <p>
+                By combining an interactive Tableau experience
+                with a custom-designed webpage, APEX presents
+                analytical work through a distinctive digital identity.
+            </p>
+        </div>
+
+        <div class="credit-box reveal">
+            <h3>PROJECT CREDITS</h3>
+
+            <div class="credit-row">
+                <span>PROJECT</span>
+                <span>APEX</span>
+            </div>
+
+            <div class="credit-row">
+                <span>CREATOR</span>
+                <span>Mehvish Siddiqui</span>
+            </div>
+
+            <div class="credit-row">
+                <span>DOMAIN</span>
+                <span>Formula 1</span>
+            </div>
+
+            <div class="credit-row">
+                <span>ANALYTICS</span>
+                <span>Tableau Public</span>
+            </div>
+
+            <div class="credit-row">
+                <span>DEVELOPMENT</span>
+                <span>HTML / CSS / JS</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+
+    <div class="footer-top">
+        <div>
+            <div class="footer-brand">APEX<span>.</span></div>
+            <p class="footer-copy">
+                FORMULA 1 RACE PERFORMANCE ANALYTICS<br>
+                PRECISION IN EVERY PIXEL.
+            </p>
+        </div>
+
+        <div class="footer-nav">
+            <a href="#home">HOME</a>
+            <a href="#project">PROJECT</a>
+            <a href="#dashboard">DASHBOARD</a>
+            <a href="#story">STORY</a>
+            <a href="#about">CREDITS</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span>© 2026 APEX / MEHVISH SIDDIQUI</span>
+        <span>END OF THE GRID.</span>
+    </div>
+
+</footer>
+
+<button id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+
+// INTRO
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("intro").classList.add("done");
+    }, 1300);
+});
+
+// MOBILE NAVIGATION
+const menu = document.getElementById("menu");
+const nav = document.getElementById("nav");
+
+menu.addEventListener("click", () => {
+    nav.classList.toggle("open");
+    menu.textContent = nav.classList.contains("open") ? "✕" : "☰";
+});
+
+document.querySelectorAll(".nav-center a").forEach(link => {
+    link.addEventListener("click", () => {
+        nav.classList.remove("open");
+        menu.textContent = "☰";
+    });
+});
+
+// SCROLL PROGRESS
+window.addEventListener("scroll", () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
+
+    document.getElementById("progress").style.width = progress + "%";
+
+    document.getElementById("backTop").classList.toggle(
+        "show", window.scrollY > 500
+    );
+});
+
+// REVEAL EFFECT
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.12 });
+
+document.querySelectorAll(".reveal").forEach(el => {
+    revealObserver.observe(el);
+});
+
+// BACK TO TOP
+document.getElementById("backTop").addEventListener("click", () => {
+    window.scrollTo({top:0,behavior:"smooth"});
+});
+
+// TELEMETRY VISUAL SIMULATION
+const values = [
+    {id:"rpm", min:11800, max:13200, format:v => Math.round(v).toLocaleString("en-US")},
+    {id:"speed", min:250, max:320, format:v => Math.round(v)},
+    {id:"gear", min:5, max:8, format:v => String(Math.round(v)).padStart(2,"0")},
+    {id:"throttle", min:75, max:100, format:v => Math.round(v)}
+];
+
+function animateTelemetry() {
+    values.forEach(item => {
+        const number = Math.random() * (item.max - item.min) + item.min;
+        document.getElementById(item.id).textContent = item.format(number);
+    });
+}
+
+animateTelemetry();
+setInterval(animateTelemetry, 1800);
+
+// TELEMETRY WAVEFORM
+const wave = document.getElementById("wave");
+
+for (let i = 0; i < 100; i++) {
+    const bar = document.createElement("i");
+    bar.style.height = (15 + Math.random() * 65) + "px";
+    bar.style.animationDelay = (Math.random() * 1.5) + "s";
+    wave.appendChild(bar);
+}
+
+</script>
+
 </body>
 </html>
